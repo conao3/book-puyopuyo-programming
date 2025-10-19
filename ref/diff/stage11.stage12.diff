@@ -1,6 +1,6 @@
 diff -u -r stage11/www/index.html stage12/www/index.html
---- stage11/www/index.html	2025-10-19 16:32:16.000000000 +0900
-+++ stage12/www/index.html	2025-10-19 16:32:55.000000000 +0900
+--- stage11/www/index.html	2025-10-19 16:59:29.082637734 +0900
++++ stage12/www/index.html	2025-10-19 16:59:29.197634097 +0900
 @@ -12,6 +12,8 @@
  </head>
  
@@ -11,8 +11,8 @@ diff -u -r stage11/www/index.html stage12/www/index.html
      </div>
      <div style="display:none">
 diff -u -r stage11/www/src/config.js stage12/www/src/config.js
---- stage11/www/src/config.js	2025-10-19 16:32:16.000000000 +0900
-+++ stage12/www/src/config.js	2025-10-19 16:32:55.000000000 +0900
+--- stage11/www/src/config.js	2025-10-19 16:59:29.089637513 +0900
++++ stage12/www/src/config.js	2025-10-19 16:59:29.203633908 +0900
 @@ -5,6 +5,7 @@
      static stageCols = 6; // ステージの横の個数
      static stageRows = 12; // ステージの縦の個数
@@ -22,8 +22,8 @@ diff -u -r stage11/www/src/config.js stage12/www/src/config.js
      // 初期状態のステージ
      static initialBoard = [
 diff -u -r stage11/www/src/player.js stage12/www/src/player.js
---- stage11/www/src/player.js	2025-10-19 16:32:16.000000000 +0900
-+++ stage12/www/src/player.js	2025-10-19 16:32:55.000000000 +0900
+--- stage11/www/src/player.js	2025-10-19 16:59:29.087637576 +0900
++++ stage12/www/src/player.js	2025-10-19 16:59:29.201633971 +0900
 @@ -74,9 +74,10 @@
              return false;
          }
@@ -39,8 +39,8 @@ diff -u -r stage11/www/src/player.js stage12/www/src/player.js
          // 新しいぷよ画像を作成する
          Player.centerPuyoElement = GameImage.getPuyoImage(Player.centerPuyoColor);
 diff -u -r stage11/www/src/stage.js stage12/www/src/stage.js
---- stage11/www/src/stage.js	2025-10-19 16:32:16.000000000 +0900
-+++ stage12/www/src/stage.js	2025-10-19 16:32:55.000000000 +0900
+--- stage11/www/src/stage.js	2025-10-19 16:59:29.094637355 +0900
++++ stage12/www/src/stage.js	2025-10-19 16:59:29.210633686 +0900
 @@ -6,6 +6,9 @@
      static erasingStartFrame = 0;
      static erasingInfoList = [];

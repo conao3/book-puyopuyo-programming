@@ -1,6 +1,6 @@
 diff -u -r stage12/www/index.html stage13/www/index.html
---- stage12/www/index.html	2025-10-19 16:32:55.000000000 +0900
-+++ stage13/www/index.html	2025-10-19 16:33:37.000000000 +0900
+--- stage12/www/index.html	2025-10-19 16:59:29.197634097 +0900
++++ stage13/www/index.html	2025-10-19 16:59:28.975641118 +0900
 @@ -9,6 +9,7 @@
      <script src="src/game.js"></script>
      <script src="src/image.js"></script>
@@ -36,8 +36,8 @@ diff -u -r stage12/www/index.html stage13/www/index.html
  </body>
  
 diff -u -r stage12/www/src/config.js stage13/www/src/config.js
---- stage12/www/src/config.js	2025-10-19 16:32:55.000000000 +0900
-+++ stage13/www/src/config.js	2025-10-19 16:33:37.000000000 +0900
+--- stage12/www/src/config.js	2025-10-19 16:59:29.203633908 +0900
++++ stage13/www/src/config.js	2025-10-19 16:59:28.985640802 +0900
 @@ -6,6 +6,7 @@
      static stageRows = 12; // ステージの縦の個数
      static stageBackgroundColor = '#11213b'; // ステージの背景色
@@ -57,10 +57,9 @@ diff -u -r stage12/www/src/config.js stage13/www/src/config.js
 +    static colorBonusTable = [0, 0, 3, 6, 12, 24]; // 色数ボーナステーブル
 +    static zenkeshiBonus = 3600; // 全消し時のボーナス
  }
-\ No newline at end of file
 diff -u -r stage12/www/src/game.js stage13/www/src/game.js
---- stage12/www/src/game.js	2025-10-19 16:32:55.000000000 +0900
-+++ stage13/www/src/game.js	2025-10-19 16:33:37.000000000 +0900
+--- stage12/www/src/game.js	2025-10-19 16:59:29.207633781 +0900
++++ stage13/www/src/game.js	2025-10-19 16:59:28.987640738 +0900
 @@ -21,6 +21,9 @@
      // プレイヤー操作を準備する
      Player.initialize();
@@ -88,8 +87,8 @@ diff -u -r stage12/www/src/game.js stage13/www/src/game.js
                  comboCount = 0;
                  gameState = 'createPlayerPuyo';
 diff -u -r stage12/www/src/image.js stage13/www/src/image.js
---- stage12/www/src/image.js	2025-10-19 16:32:55.000000000 +0900
-+++ stage13/www/src/image.js	2025-10-19 16:33:37.000000000 +0900
+--- stage12/www/src/image.js	2025-10-19 16:59:29.199634034 +0900
++++ stage13/www/src/image.js	2025-10-19 16:59:28.980640960 +0900
 @@ -1,5 +1,6 @@
  class GameImage {
      static puyoImageList = null;
@@ -134,10 +133,9 @@ diff -u -r stage12/www/src/image.js stage13/www/src/image.js
 +        return GameImage.digitImageList[0].width;
 +    }
  }
-\ No newline at end of file
 diff -u -r stage12/www/src/player.js stage13/www/src/player.js
---- stage12/www/src/player.js	2025-10-19 16:32:55.000000000 +0900
-+++ stage13/www/src/player.js	2025-10-19 16:33:37.000000000 +0900
+--- stage12/www/src/player.js	2025-10-19 16:59:29.201633971 +0900
++++ stage13/www/src/player.js	2025-10-19 16:59:28.982640897 +0900
 @@ -131,6 +131,10 @@
                  // ブロックの境を超えたので、自分の位置をひとつ下にずらす
                  y += 1;

@@ -1,6 +1,6 @@
 diff -u -r stage05/www/src/config.js stage06/www/src/config.js
---- stage05/www/src/config.js	2025-10-19 16:28:12.000000000 +0900
-+++ stage06/www/src/config.js	2025-10-19 16:28:51.000000000 +0900
+--- stage05/www/src/config.js	2025-10-19 16:59:28.788647031 +0900
++++ stage06/www/src/config.js	2025-10-19 16:59:28.721649150 +0900
 @@ -24,4 +24,6 @@
  
      static puyoColorMax = 5; // 何色のぷよを使うか
@@ -8,10 +8,9 @@ diff -u -r stage05/www/src/config.js stage06/www/src/config.js
 +    static erasePuyoCount = 4; // 何個以上揃ったら消えるか
 +    static eraseAnimationFrames = 30; // 何フレームでぷよを消すか
  }
-\ No newline at end of file
 diff -u -r stage05/www/src/game.js stage06/www/src/game.js
---- stage05/www/src/game.js	2025-10-19 16:28:12.000000000 +0900
-+++ stage06/www/src/game.js	2025-10-19 16:28:51.000000000 +0900
+--- stage05/www/src/game.js	2025-10-19 16:59:28.791646936 +0900
++++ stage06/www/src/game.js	2025-10-19 16:59:28.723649086 +0900
 @@ -9,6 +9,7 @@
  
  let gameState; // ゲームの現在の状況
@@ -56,8 +55,8 @@ diff -u -r stage05/www/src/game.js stage06/www/src/game.js
      frame++;
      setTimeout(gameLoop, 1000 / 60); // 1/60秒後にもう一度呼び出す
 diff -u -r stage05/www/src/stage.js stage06/www/src/stage.js
---- stage05/www/src/stage.js	2025-10-19 16:28:12.000000000 +0900
-+++ stage06/www/src/stage.js	2025-10-19 16:28:51.000000000 +0900
+--- stage05/www/src/stage.js	2025-10-19 16:59:28.793646873 +0900
++++ stage06/www/src/stage.js	2025-10-19 16:59:28.727648960 +0900
 @@ -3,6 +3,8 @@
      static puyoBoard = null;
      static puyoCount = 0;
@@ -190,4 +189,3 @@ diff -u -r stage05/www/src/stage.js stage06/www/src/stage.js
 +        }
 +    }
  }
-\ No newline at end of file

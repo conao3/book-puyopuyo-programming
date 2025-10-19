@@ -1,6 +1,6 @@
 diff -u -r stage06/www/index.html stage07/www/index.html
---- stage06/www/index.html	2025-10-19 16:28:51.000000000 +0900
-+++ stage07/www/index.html	2025-10-19 16:29:53.000000000 +0900
+--- stage06/www/index.html	2025-10-19 16:59:28.714649371 +0900
++++ stage07/www/index.html	2025-10-19 16:59:28.926642667 +0900
 @@ -19,6 +19,7 @@
          <img src="img/puyo_3.png" id="puyo_3">
          <img src="img/puyo_4.png" id="puyo_4">
@@ -10,8 +10,8 @@ diff -u -r stage06/www/index.html stage07/www/index.html
  </body>
  
 diff -u -r stage06/www/src/config.js stage07/www/src/config.js
---- stage06/www/src/config.js	2025-10-19 16:28:51.000000000 +0900
-+++ stage07/www/src/config.js	2025-10-19 16:29:53.000000000 +0900
+--- stage06/www/src/config.js	2025-10-19 16:59:28.721649150 +0900
++++ stage07/www/src/config.js	2025-10-19 16:59:28.932642478 +0900
 @@ -8,22 +8,23 @@
  
      // 初期状態のステージ
@@ -48,10 +48,9 @@ diff -u -r stage06/www/src/config.js stage07/www/src/config.js
      static eraseAnimationFrames = 30; // 何フレームでぷよを消すか
 +    static zenkeshiDuration = 150; // 全消し時のアニメーションミリセカンド
  }
-\ No newline at end of file
 diff -u -r stage06/www/src/game.js stage07/www/src/game.js
---- stage06/www/src/game.js	2025-10-19 16:28:51.000000000 +0900
-+++ stage07/www/src/game.js	2025-10-19 16:29:53.000000000 +0900
+--- stage06/www/src/game.js	2025-10-19 16:59:28.723649086 +0900
++++ stage07/www/src/game.js	2025-10-19 16:59:28.934642414 +0900
 @@ -51,7 +51,12 @@
              if (eraseInfo) {
                  gameState = 'erasingPuyo';
@@ -66,8 +65,8 @@ diff -u -r stage06/www/src/game.js stage07/www/src/game.js
                  gameState = '';
              }
 diff -u -r stage06/www/src/stage.js stage07/www/src/stage.js
---- stage06/www/src/stage.js	2025-10-19 16:28:51.000000000 +0900
-+++ stage07/www/src/stage.js	2025-10-19 16:29:53.000000000 +0900
+--- stage06/www/src/stage.js	2025-10-19 16:59:28.727648960 +0900
++++ stage07/www/src/stage.js	2025-10-19 16:59:28.935642383 +0900
 @@ -5,6 +5,7 @@
      static fallingPuyoInfoList = [];
      static erasingStartFrame = 0;
@@ -112,4 +111,3 @@ diff -u -r stage06/www/src/stage.js stage07/www/src/stage.js
 +        Stage.zenkeshiImage.style.opacity = '0';
 +    }
  }
-\ No newline at end of file

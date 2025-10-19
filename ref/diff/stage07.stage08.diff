@@ -1,6 +1,6 @@
 diff -u -r stage07/www/index.html stage08/www/index.html
---- stage07/www/index.html	2025-10-19 16:29:53.000000000 +0900
-+++ stage08/www/index.html	2025-10-19 16:30:35.000000000 +0900
+--- stage07/www/index.html	2025-10-19 16:59:28.926642667 +0900
++++ stage08/www/index.html	2025-10-19 16:59:28.543654779 +0900
 @@ -8,6 +8,7 @@
      <script src="src/stage.js"></script>
      <script src="src/game.js"></script>
@@ -10,8 +10,8 @@ diff -u -r stage07/www/index.html stage08/www/index.html
  
  <body style="margin: 0;">
 diff -u -r stage07/www/src/config.js stage08/www/src/config.js
---- stage07/www/src/config.js	2025-10-19 16:29:53.000000000 +0900
-+++ stage08/www/src/config.js	2025-10-19 16:30:35.000000000 +0900
+--- stage07/www/src/config.js	2025-10-19 16:59:28.932642478 +0900
++++ stage08/www/src/config.js	2025-10-19 16:59:28.550654558 +0900
 @@ -8,18 +8,18 @@
  
      // 初期状態のステージ
@@ -51,10 +51,9 @@ diff -u -r stage07/www/src/config.js stage08/www/src/config.js
 +    static playerFallingSpeed = 0.9; // プレイ中の自然落下のスピード
 +    static playerLockDelayFrames = 20; // 何フレーム接地したらぷよを固定するか
  }
-\ No newline at end of file
 diff -u -r stage07/www/src/game.js stage08/www/src/game.js
---- stage07/www/src/game.js	2025-10-19 16:29:53.000000000 +0900
-+++ stage08/www/src/game.js	2025-10-19 16:30:35.000000000 +0900
+--- stage07/www/src/game.js	2025-10-19 16:59:28.934642414 +0900
++++ stage08/www/src/game.js	2025-10-19 16:59:28.553654463 +0900
 @@ -58,7 +58,7 @@
                      Stage.showZenkeshi();
                  }

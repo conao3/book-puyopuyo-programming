@@ -1,16 +1,15 @@
 diff -u -r stage04/www/src/config.js stage05/www/src/config.js
---- stage04/www/src/config.js	2025-10-19 16:27:33.000000000 +0900
-+++ stage05/www/src/config.js	2025-10-19 16:28:12.000000000 +0900
+--- stage04/www/src/config.js	2025-10-19 16:59:29.145635742 +0900
++++ stage05/www/src/config.js	2025-10-19 16:59:28.788647031 +0900
 @@ -23,4 +23,5 @@
      ];
  
      static puyoColorMax = 5; // 何色のぷよを使うか
 +    static fallingSpeed = 6; // 自由落下のスピード
  }
-\ No newline at end of file
 diff -u -r stage04/www/src/game.js stage05/www/src/game.js
---- stage04/www/src/game.js	2025-10-19 16:27:33.000000000 +0900
-+++ stage05/www/src/game.js	2025-10-19 16:28:12.000000000 +0900
+--- stage04/www/src/game.js	2025-10-19 16:59:29.148635647 +0900
++++ stage05/www/src/game.js	2025-10-19 16:59:28.791646936 +0900
 @@ -2,12 +2,49 @@
  window.addEventListener("load", () => {
      // まずステージを整える
@@ -61,10 +60,9 @@ diff -u -r stage04/www/src/game.js stage05/www/src/game.js
 +    frame++;
 +    setTimeout(gameLoop, 1000 / 60); // 1/60秒後にもう一度呼び出す
  }
-\ No newline at end of file
 diff -u -r stage04/www/src/stage.js stage05/www/src/stage.js
---- stage04/www/src/stage.js	2025-10-19 16:27:33.000000000 +0900
-+++ stage05/www/src/stage.js	2025-10-19 16:28:12.000000000 +0900
+--- stage04/www/src/stage.js	2025-10-19 16:59:29.151635552 +0900
++++ stage05/www/src/stage.js	2025-10-19 16:59:28.793646873 +0900
 @@ -2,6 +2,7 @@
      static stageElement = null;
      static puyoBoard = null;
@@ -171,4 +169,3 @@ diff -u -r stage04/www/src/stage.js stage05/www/src/stage.js
 +        return isFalling;
 +    }
  }
-\ No newline at end of file

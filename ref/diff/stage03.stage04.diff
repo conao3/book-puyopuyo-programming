@@ -1,6 +1,6 @@
 diff -u -r stage03/www/index.html stage04/www/index.html
 --- stage03/www/index.html	2025-10-19 16:26:36.000000000 +0900
-+++ stage04/www/index.html	2025-10-19 16:27:33.000000000 +0900
++++ stage04/www/index.html	2025-10-19 16:59:29.139635931 +0900
 @@ -7,11 +7,19 @@
      <script src="src/config.js"></script>
      <script src="src/stage.js"></script>
@@ -20,12 +20,10 @@ diff -u -r stage03/www/index.html stage04/www/index.html
 +    </div>
  </body>
  
--</html>
-+</html>
-\ No newline at end of file
+ </html>
 diff -u -r stage03/www/src/config.js stage04/www/src/config.js
---- stage03/www/src/config.js	2025-10-19 16:26:36.000000000 +0900
-+++ stage04/www/src/config.js	2025-10-19 16:27:33.000000000 +0900
+--- stage03/www/src/config.js	2025-10-19 16:59:29.032639315 +0900
++++ stage04/www/src/config.js	2025-10-19 16:59:29.145635742 +0900
 @@ -5,4 +5,22 @@
      static stageCols = 6; // ステージの横の個数
      static stageRows = 12; // ステージの縦の個数
@@ -49,10 +47,9 @@ diff -u -r stage03/www/src/config.js stage04/www/src/config.js
 +
 +    static puyoColorMax = 5; // 何色のぷよを使うか
  }
-\ No newline at end of file
 diff -u -r stage03/www/src/game.js stage04/www/src/game.js
---- stage03/www/src/game.js	2025-10-19 16:26:36.000000000 +0900
-+++ stage04/www/src/game.js	2025-10-19 16:27:33.000000000 +0900
+--- stage03/www/src/game.js	2025-10-19 16:59:29.034639252 +0900
++++ stage04/www/src/game.js	2025-10-19 16:59:29.148635647 +0900
 @@ -5,6 +5,9 @@
  });
  
@@ -63,11 +60,10 @@ diff -u -r stage03/www/src/game.js stage04/www/src/game.js
      // ステージを準備する
      Stage.initialize();
  }
-\ No newline at end of file
 Only in stage04/www/src: image.js
 diff -u -r stage03/www/src/stage.js stage04/www/src/stage.js
---- stage03/www/src/stage.js	2025-10-19 16:26:36.000000000 +0900
-+++ stage04/www/src/stage.js	2025-10-19 16:27:33.000000000 +0900
+--- stage03/www/src/stage.js	2025-10-19 16:59:29.037639157 +0900
++++ stage04/www/src/stage.js	2025-10-19 16:59:29.151635552 +0900
 @@ -1,5 +1,7 @@
  class Stage {
      static stageElement = null;
@@ -122,4 +118,3 @@ diff -u -r stage03/www/src/stage.js stage04/www/src/stage.js
 +        Stage.puyoCount++;
      }
  }
-\ No newline at end of file
