@@ -1,171 +1,171 @@
 diff -u -r stage04/www/src/config.js stage05/www/src/config.js
---- stage04/www/src/config.js	2025-10-19 16:59:29.145635742 +0900
-+++ stage05/www/src/config.js	2025-10-19 16:59:28.788647031 +0900
+--- stage04/www/src/config.js	2025-10-19 17:42:22.293733236 +0900
++++ stage05/www/src/config.js	2025-10-19 17:42:22.295733172 +0900
 @@ -23,4 +23,5 @@
-     ];
+   ];
  
-     static puyoColorMax = 5; // 何色のぷよを使うか
-+    static fallingSpeed = 6; // 自由落下のスピード
+   static puyoColorMax = 5; // 何色のぷよを使うか
++  static fallingSpeed = 6; // 自由落下のスピード
  }
 diff -u -r stage04/www/src/game.js stage05/www/src/game.js
---- stage04/www/src/game.js	2025-10-19 16:59:29.148635647 +0900
-+++ stage05/www/src/game.js	2025-10-19 16:59:28.791646936 +0900
+--- stage04/www/src/game.js	2025-10-19 17:42:22.293733236 +0900
++++ stage05/www/src/game.js	2025-10-19 17:42:22.295733172 +0900
 @@ -2,12 +2,49 @@
- window.addEventListener("load", () => {
-     // まずステージを整える
-     initialize();
+ window.addEventListener('load', () => {
+   // まずステージを整える
+   initialize();
 +
-+    // ゲームループを開始する
-+    gameLoop();
++  // ゲームループを開始する
++  gameLoop();
  });
  
 +let gameState; // ゲームの現在の状況
 +let frame; // ゲームの現在フレーム（1/60秒ごとに1追加される）
 +
  function initialize() {
-     // 画像を準備する
-     GameImage.initialize();
+   // 画像を準備する
+   GameImage.initialize();
  
-     // ステージを準備する
-     Stage.initialize();
+   // ステージを準備する
+   Stage.initialize();
 +
-+    // シーンを初期状態にセットする
-+    gameState = 'start';
-+    // フレームを初期化する
-+    frame = 0;
++  // シーンを初期状態にセットする
++  gameState = 'start';
++  // フレームを初期化する
++  frame = 0;
 +}
 +
 +function gameLoop() {
-+    switch (gameState) {
-+        case 'start':
-+            // ゲーム開始直後の状態
-+            // 最初は、もしかしたら空中にあるかもしれないぷよを自由落下させるところからスタート
-+            gameState = 'checkFallingPuyo';
-+            break;
-+        case 'checkFallingPuyo':
-+            // 落ちるかどうか判定する状態
-+            if (Stage.checkFallingPuyo()) {
-+                gameState = 'fallingPuyo';
-+            } else {
-+                gameState = '';
-+            }
-+            break;
-+        case 'fallingPuyo':
-+            // ぷよが自由落下しているアニメーション状態
-+            if (!Stage.fallPuyo()) {
-+                gameState = '';
-+            }
-+            break;
-+    }
-+    frame++;
-+    setTimeout(gameLoop, 1000 / 60); // 1/60秒後にもう一度呼び出す
++  switch (gameState) {
++    case 'start':
++      // ゲーム開始直後の状態
++      // 最初は、もしかしたら空中にあるかもしれないぷよを自由落下させるところからスタート
++      gameState = 'checkFallingPuyo';
++      break;
++    case 'checkFallingPuyo':
++      // 落ちるかどうか判定する状態
++      if (Stage.checkFallingPuyo()) {
++        gameState = 'fallingPuyo';
++      } else {
++        gameState = '';
++      }
++      break;
++    case 'fallingPuyo':
++      // ぷよが自由落下しているアニメーション状態
++      if (!Stage.fallPuyo()) {
++        gameState = '';
++      }
++      break;
++  }
++  frame++;
++  setTimeout(gameLoop, 1000 / 60); // 1/60秒後にもう一度呼び出す
  }
 diff -u -r stage04/www/src/stage.js stage05/www/src/stage.js
---- stage04/www/src/stage.js	2025-10-19 16:59:29.151635552 +0900
-+++ stage05/www/src/stage.js	2025-10-19 16:59:28.793646873 +0900
+--- stage04/www/src/stage.js	2025-10-19 17:42:22.293733236 +0900
++++ stage05/www/src/stage.js	2025-10-19 17:42:22.296733139 +0900
 @@ -2,6 +2,7 @@
-     static stageElement = null;
-     static puyoBoard = null;
-     static puyoCount = 0;
-+    static fallingPuyoInfoList = [];
+   static stageElement = null;
+   static puyoBoard = null;
+   static puyoCount = 0;
++  static fallingPuyoInfoList = [];
  
-     static initialize() {
-         // HTML からステージの元となる要素を取得し、大きさを設定する
-@@ -50,4 +51,97 @@
-         // ぷよの総数を追加する
-         Stage.puyoCount++;
-     }
+   static initialize() {
+     // HTML からステージの元となる要素を取得し、大きさを設定する
+@@ -52,4 +53,97 @@
+     // ぷよの総数を追加する
+     Stage.puyoCount++;
+   }
 +
-+    // ぷよぷよ盤にぷよ情報をセットする
-+    static setPuyoInfo(x, y, info) {
-+        Stage.puyoBoard[y][x] = info;
++  // ぷよぷよ盤にぷよ情報をセットする
++  static setPuyoInfo(x, y, info) {
++    Stage.puyoBoard[y][x] = info;
++  }
++
++  // ぷよぷよ盤の情報を返す
++  static getPuyoInfo(x, y) {
++    // 左右、もしくは底の場合は、ダミーのぷよ情報を返す
++    if (x < 0 || x >= Config.stageCols || y >= Config.stageRows) {
++      return {
++        puyoColor: -1,
++      };
 +    }
++    // y 座標がマイナスの場合は、そこは空白扱いする
++    if (y < 0) {
++      return null;
++    }
++    // それ以外の場合はぷよぷよ盤の情報をそのまま返す
++    return Stage.puyoBoard[y][x];
++  }
 +
-+    // ぷよぷよ盤の情報を返す
-+    static getPuyoInfo(x, y) {
-+        // 左右、もしくは底の場合は、ダミーのぷよ情報を返す
-+        if (x < 0 || x >= Config.stageCols || y >= Config.stageRows) {
-+            return {
-+                puyoColor: -1
-+            };
++  // ぷよぷよ盤からぷよ情報を消す
++  static removePuyoInfo(x, y) {
++    Stage.puyoBoard[y][x] = null;
++  }
++
++  // 自由落下するぷよがあるかどうかをチェックする
++  static checkFallingPuyo() {
++    Stage.fallingPuyoInfoList = [];
++
++    // 下の行から上の行を見ていく
++    for (let y = Config.stageRows - 2; y >= 0; y--) {
++      for (let x = 0; x < Config.stageCols; x++) {
++        const currentPuyoInfo = Stage.getPuyoInfo(x, y);
++        if (!currentPuyoInfo) {
++          // このマスにぷよがなければ、次
++          continue;
 +        }
-+        // y 座標がマイナスの場合は、そこは空白扱いする
-+        if (y < 0) {
-+            return null;
++        const belowPuyoInfo = Stage.getPuyoInfo(x, y + 1);
++        if (!belowPuyoInfo) {
++          // 下が空白なので、このぷよは落ちる
++
++          // まず、ぷよぷよ盤からそのぷよを取り去る
++          Stage.removePuyoInfo(x, y);
++
++          // 自由落下した場合にどこまで落ちるのか調べる
++          let destination = y;
++          while (!Stage.getPuyoInfo(x, destination + 1)) {
++            destination++;
++          }
++          // 最終目的地に置く
++          Stage.setPuyoInfo(x, destination, currentPuyoInfo);
++          // 「落ちるぷよ情報リスト」に「落ちるぷよ情報」を入れる
++          Stage.fallingPuyoInfoList.push({
++            element: currentPuyoInfo.element, // 画面上のぷよ要素
++            position: y * Config.puyoImageHeight, // 画面上の現在の Y 座標の位置
++            destination: destination * Config.puyoImageHeight, // 画面上の目的地の Y 座標の位置
++            falling: true, // 今落ちているかどうか
++          });
 +        }
-+        // それ以外の場合はぷよぷよ盤の情報をそのまま返す
-+        return Stage.puyoBoard[y][x];
++      }
 +    }
++    return Stage.fallingPuyoInfoList.length > 0;
++  }
 +
-+    // ぷよぷよ盤からぷよ情報を消す
-+    static removePuyoInfo(x, y) {
-+        Stage.puyoBoard[y][x] = null;
++  // 自由落下させる
++  static fallPuyo() {
++    let isFalling = false;
++    for (const fallingPuyoInfo of Stage.fallingPuyoInfoList) {
++      if (!fallingPuyoInfo.falling) {
++        // すでに自由落下が終わっている
++        continue;
++      }
++      // 現在の画面上の Y 座標を取得して、それに自由落下分を追加する
++      let position = fallingPuyoInfo.position;
++      position += Config.fallingSpeed;
++
++      if (position >= fallingPuyoInfo.destination) {
++        // 自由落下終了
++        position = fallingPuyoInfo.destination;
++        fallingPuyoInfo.falling = false;
++      } else {
++        // まだ落下しているぷよがあることを記憶する
++        isFalling = true;
++      }
++      // 新しい位置を保存する
++      fallingPuyoInfo.position = position;
++      // ぷよを動かす
++      fallingPuyoInfo.element.style.top = position + 'px';
 +    }
-+
-+    // 自由落下するぷよがあるかどうかをチェックする
-+    static checkFallingPuyo() {
-+        Stage.fallingPuyoInfoList = [];
-+
-+        // 下の行から上の行を見ていく
-+        for (let y = Config.stageRows - 2; y >= 0; y--) {
-+            for (let x = 0; x < Config.stageCols; x++) {
-+                const currentPuyoInfo = Stage.getPuyoInfo(x, y);
-+                if (!currentPuyoInfo) {
-+                    // このマスにぷよがなければ、次
-+                    continue;
-+                }
-+                const belowPuyoInfo = Stage.getPuyoInfo(x, y + 1);
-+                if (!belowPuyoInfo) {
-+                    // 下が空白なので、このぷよは落ちる
-+
-+                    // まず、ぷよぷよ盤からそのぷよを取り去る
-+                    Stage.removePuyoInfo(x, y);
-+
-+                    // 自由落下した場合にどこまで落ちるのか調べる
-+                    let destination = y;
-+                    while (!Stage.getPuyoInfo(x, destination + 1)) {
-+                        destination++;
-+                    }
-+                    // 最終目的地に置く
-+                    Stage.setPuyoInfo(x, destination, currentPuyoInfo);
-+                    // 「落ちるぷよ情報リスト」に「落ちるぷよ情報」を入れる
-+                    Stage.fallingPuyoInfoList.push({
-+                        element: currentPuyoInfo.element, // 画面上のぷよ要素
-+                        position: y * Config.puyoImageHeight, // 画面上の現在の Y 座標の位置
-+                        destination: destination * Config.puyoImageHeight, // 画面上の目的地の Y 座標の位置
-+                        falling: true // 今落ちているかどうか
-+                    });
-+                }
-+            }
-+        }
-+        return (Stage.fallingPuyoInfoList.length > 0);
-+    }
-+
-+    // 自由落下させる
-+    static fallPuyo() {
-+        let isFalling = false;
-+        for (const fallingPuyoInfo of Stage.fallingPuyoInfoList) {
-+            if (!fallingPuyoInfo.falling) {
-+                // すでに自由落下が終わっている
-+                continue;
-+            }
-+            // 現在の画面上の Y 座標を取得して、それに自由落下分を追加する
-+            let position = fallingPuyoInfo.position;
-+            position += Config.fallingSpeed;
-+
-+            if (position >= fallingPuyoInfo.destination) {
-+                // 自由落下終了
-+                position = fallingPuyoInfo.destination;
-+                fallingPuyoInfo.falling = false;
-+            } else {
-+                // まだ落下しているぷよがあることを記憶する
-+                isFalling = true;
-+            }
-+            // 新しい位置を保存する
-+            fallingPuyoInfo.position = position;
-+            // ぷよを動かす
-+            fallingPuyoInfo.element.style.top = position + 'px';
-+        }
-+        return isFalling;
-+    }
++    return isFalling;
++  }
  }

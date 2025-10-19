@@ -10,85 +10,78 @@ diff -u -r stage07/www/index.html stage08/www/index.html
  
  <body style="margin: 0;">
 diff -u -r stage07/www/src/config.js stage08/www/src/config.js
---- stage07/www/src/config.js	2025-10-19 16:59:28.932642478 +0900
-+++ stage08/www/src/config.js	2025-10-19 16:59:28.550654558 +0900
-@@ -8,18 +8,18 @@
+--- stage07/www/src/config.js	2025-10-19 17:42:22.302732944 +0900
++++ stage08/www/src/config.js	2025-10-19 17:42:22.306732813 +0900
+@@ -8,7 +8,6 @@
  
-     // 初期状態のステージ
-     static initialBoard = [
--        [0, 0, 0, 0, 4, 5] ,
--        [0, 0, 0, 0, 0, 0] ,
--        [0, 0, 0, 0, 0, 0] ,
--        [0, 0, 0, 0, 0, 0] ,
--        [0, 0, 0, 0, 0, 0] ,
--        [0, 0, 0, 0, 0, 0] ,
--        [0, 0, 0, 0, 0, 0] ,
--        [0, 0, 0, 0, 0, 0] ,
--        [0, 1, 2, 3, 0, 0] ,
--        [1, 2, 3, 4, 5, 0] ,
--        [1, 2, 3, 4, 5, 0] ,
--        [1, 2, 3, 4, 5, 0] ,
-+        [0, 0, 0, 0, 0, 0],
-+        [0, 0, 0, 0, 0, 0],
-+        [0, 0, 0, 0, 0, 0],
-+        [0, 0, 0, 0, 0, 0],
-+        [0, 0, 0, 0, 0, 0],
-+        [0, 0, 0, 0, 0, 0],
-+        [0, 0, 0, 0, 0, 0],
-+        [0, 0, 0, 0, 0, 0],
-+        [0, 0, 0, 0, 0, 0],
-+        [0, 0, 0, 0, 0, 0],
-+        [0, 0, 0, 0, 0, 0],
-+        [0, 0, 0, 0, 0, 0],
-     ];
+   // 初期状態のステージ
+   static initialBoard = [
+-    [0, 0, 0, 0, 4, 5],
+     [0, 0, 0, 0, 0, 0],
+     [0, 0, 0, 0, 0, 0],
+     [0, 0, 0, 0, 0, 0],
+@@ -16,10 +15,11 @@
+     [0, 0, 0, 0, 0, 0],
+     [0, 0, 0, 0, 0, 0],
+     [0, 0, 0, 0, 0, 0],
+-    [0, 1, 2, 3, 0, 0],
+-    [1, 2, 3, 4, 5, 0],
+-    [1, 2, 3, 4, 5, 0],
+-    [1, 2, 3, 4, 5, 0],
++    [0, 0, 0, 0, 0, 0],
++    [0, 0, 0, 0, 0, 0],
++    [0, 0, 0, 0, 0, 0],
++    [0, 0, 0, 0, 0, 0],
++    [0, 0, 0, 0, 0, 0],
+   ];
  
-     static puyoColorMax = 5; // 何色のぷよを使うか
+   static puyoColorMax = 5; // 何色のぷよを使うか
 @@ -27,4 +27,7 @@
-     static erasePuyoCount = 4; // 何個以上揃ったら消えるか
-     static eraseAnimationFrames = 30; // 何フレームでぷよを消すか
-     static zenkeshiDuration = 150; // 全消し時のアニメーションミリセカンド
+   static erasePuyoCount = 4; // 何個以上揃ったら消えるか
+   static eraseAnimationFrames = 30; // 何フレームでぷよを消すか
+   static zenkeshiDuration = 150; // 全消し時のアニメーションミリセカンド
 +
-+    static playerFallingSpeed = 0.9; // プレイ中の自然落下のスピード
-+    static playerLockDelayFrames = 20; // 何フレーム接地したらぷよを固定するか
++  static playerFallingSpeed = 0.9; // プレイ中の自然落下のスピード
++  static playerLockDelayFrames = 20; // 何フレーム接地したらぷよを固定するか
  }
 diff -u -r stage07/www/src/game.js stage08/www/src/game.js
---- stage07/www/src/game.js	2025-10-19 16:59:28.934642414 +0900
-+++ stage08/www/src/game.js	2025-10-19 16:59:28.553654463 +0900
+--- stage07/www/src/game.js	2025-10-19 17:42:22.303732911 +0900
++++ stage08/www/src/game.js	2025-10-19 17:42:22.307732781 +0900
 @@ -58,7 +58,7 @@
-                     Stage.showZenkeshi();
-                 }
-                 comboCount = 0;
--                gameState = '';
-+                gameState = 'createPlayerPuyo';
-             }
-             break;
-         case 'erasingPuyo':
+           Stage.showZenkeshi();
+         }
+         comboCount = 0;
+-        gameState = '';
++        gameState = 'createPlayerPuyo';
+       }
+       break;
+     case 'erasingPuyo':
 @@ -68,6 +68,27 @@
-                 gameState = 'checkFallingPuyo';
-             }
-             break;
-+        case 'createPlayerPuyo':
-+            // 新しくプレイヤーの操作ぷよを作成する状態
-+            if (!Player.createPlayerPuyo()) {
-+                // 新しい操作用ぷよを作成する。作成出来なかったら、ゲームオーバー
-+                gameState = 'gameOver';
-+            } else {
-+                // プレイヤーが操作する
-+                gameState = 'playing';
-+            }
-+            break;
-+        case 'playing':
-+            // プレイヤーが操作する状態
-+            const nextAction = Player.update();
-+            gameState = nextAction; // 'playing' 'fix' のどれかが帰ってくる
-+            break;
-+        case 'fix':
-+            // 現在の位置でぷよを固定する状態
-+            Player.fixPlayerPuyo();
-+            // 固定が完了したら、自由落下出来るぷよがあるかどうかを確認する
-+            gameState = 'checkFallingPuyo';
-+            break;
-     }
-     frame++;
-     setTimeout(gameLoop, 1000 / 60); // 1/60秒後にもう一度呼び出す
+         gameState = 'checkFallingPuyo';
+       }
+       break;
++    case 'createPlayerPuyo':
++      // 新しくプレイヤーの操作ぷよを作成する状態
++      if (!Player.createPlayerPuyo()) {
++        // 新しい操作用ぷよを作成する。作成出来なかったら、ゲームオーバー
++        gameState = 'gameOver';
++      } else {
++        // プレイヤーが操作する
++        gameState = 'playing';
++      }
++      break;
++    case 'playing':
++      // プレイヤーが操作する状態
++      const nextAction = Player.update();
++      gameState = nextAction; // 'playing' 'fix' のどれかが帰ってくる
++      break;
++    case 'fix':
++      // 現在の位置でぷよを固定する状態
++      Player.fixPlayerPuyo();
++      // 固定が完了したら、自由落下出来るぷよがあるかどうかを確認する
++      gameState = 'checkFallingPuyo';
++      break;
+   }
+   frame++;
+   setTimeout(gameLoop, 1000 / 60); // 1/60秒後にもう一度呼び出す
 Only in stage08/www/src: player.js
