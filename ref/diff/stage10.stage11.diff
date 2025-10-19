@@ -1,4 +1,4 @@
-diff -u -r stage10/www/src/config.js stage11/www/src/config.js
+diff -uN -r stage10/www/src/config.js stage11/www/src/config.js
 --- stage10/www/src/config.js	2025-10-19 17:42:22.316732488 +0900
 +++ stage11/www/src/config.js	2025-10-19 17:42:22.320732358 +0900
 @@ -32,4 +32,5 @@
@@ -7,7 +7,7 @@ diff -u -r stage10/www/src/config.js stage11/www/src/config.js
    static playerMoveFrames = 10; // 左右移動に消費するフレーム数
 +  static playerRotateFrames = 10; // 回転に消費するフレーム数
  }
-diff -u -r stage10/www/src/game.js stage11/www/src/game.js
+diff -uN -r stage10/www/src/game.js stage11/www/src/game.js
 --- stage10/www/src/game.js	2025-10-19 17:42:22.317732456 +0900
 +++ stage11/www/src/game.js	2025-10-19 17:42:22.320732358 +0900
 @@ -84,7 +84,7 @@
@@ -32,7 +32,7 @@ diff -u -r stage10/www/src/game.js stage11/www/src/game.js
    }
    frame++;
    setTimeout(gameLoop, 1000 / 60); // 1/60秒後にもう一度呼び出す
-diff -u -r stage10/www/src/player.js stage11/www/src/player.js
+diff -uN -r stage10/www/src/player.js stage11/www/src/player.js
 --- stage10/www/src/player.js	2025-10-19 17:42:22.318732423 +0900
 +++ stage11/www/src/player.js	2025-10-19 17:42:22.323732261 +0900
 @@ -9,6 +9,9 @@

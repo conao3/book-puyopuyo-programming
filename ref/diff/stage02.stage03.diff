@@ -1,4 +1,4 @@
-diff -u -r stage02/www/index.html stage03/www/index.html
+diff -uN -r stage02/www/index.html stage03/www/index.html
 --- stage02/www/index.html	2025-10-19 16:23:25.000000000 +0900
 +++ stage03/www/index.html	2025-10-19 16:26:36.000000000 +0900
 @@ -4,10 +4,14 @@
@@ -17,6 +17,46 @@ diff -u -r stage02/www/index.html stage03/www/index.html
  </body>
  
  </html>
-Only in stage03/www/src: config.js
-Only in stage03/www/src: game.js
-Only in stage03/www/src: stage.js
+diff -uN -r stage02/www/src/config.js stage03/www/src/config.js
+--- stage02/www/src/config.js	1970-01-01 09:00:00.000000000 +0900
++++ stage03/www/src/config.js	2025-10-19 17:42:22.289733366 +0900
+@@ -0,0 +1,8 @@
++class Config {
++  static puyoImageWidth = 40; // ぷよ画像の幅
++  static puyoImageHeight = 40; // ぷよ画像の高さ
++
++  static stageCols = 6; // ステージの横の個数
++  static stageRows = 12; // ステージの縦の個数
++  static stageBackgroundColor = '#11213b'; // ステージの背景色
++}
+diff -uN -r stage02/www/src/game.js stage03/www/src/game.js
+--- stage02/www/src/game.js	1970-01-01 09:00:00.000000000 +0900
++++ stage03/www/src/game.js	2025-10-19 17:42:22.289733366 +0900
+@@ -0,0 +1,10 @@
++// 起動されたときに呼ばれる関数を登録する
++window.addEventListener('load', () => {
++  // まずステージを整える
++  initialize();
++});
++
++function initialize() {
++  // ステージを準備する
++  Stage.initialize();
++}
+diff -uN -r stage02/www/src/stage.js stage03/www/src/stage.js
+--- stage02/www/src/stage.js	1970-01-01 09:00:00.000000000 +0900
++++ stage03/www/src/stage.js	2025-10-19 17:42:22.290733334 +0900
+@@ -0,0 +1,13 @@
++class Stage {
++  static stageElement = null;
++
++  static initialize() {
++    // HTML からステージの元となる要素を取得し、大きさを設定する
++    Stage.stageElement = document.getElementById('stage');
++    Stage.stageElement.style.width =
++      Config.puyoImageWidth * Config.stageCols + 'px';
++    Stage.stageElement.style.height =
++      Config.puyoImageHeight * Config.stageRows + 'px';
++    Stage.stageElement.style.backgroundColor = Config.stageBackgroundColor;
++  }
++}

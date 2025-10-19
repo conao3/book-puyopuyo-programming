@@ -1,4 +1,4 @@
-diff -u -r stage08/www/src/config.js stage09/www/src/config.js
+diff -uN -r stage08/www/src/config.js stage09/www/src/config.js
 --- stage08/www/src/config.js	2025-10-19 17:42:22.306732813 +0900
 +++ stage09/www/src/config.js	2025-10-19 17:42:22.310732683 +0900
 @@ -30,4 +30,5 @@
@@ -7,7 +7,7 @@ diff -u -r stage08/www/src/config.js stage09/www/src/config.js
    static playerLockDelayFrames = 20; // 何フレーム接地したらぷよを固定するか
 +  static playerDownSpeed = 10; // プレイ中の下キー押下時の落下スピード
  }
-diff -u -r stage08/www/src/game.js stage09/www/src/game.js
+diff -uN -r stage08/www/src/game.js stage09/www/src/game.js
 --- stage08/www/src/game.js	2025-10-19 17:42:22.307732781 +0900
 +++ stage09/www/src/game.js	2025-10-19 17:42:22.316732488 +0900
 @@ -18,6 +18,9 @@
@@ -20,7 +20,7 @@ diff -u -r stage08/www/src/game.js stage09/www/src/game.js
    // シーンを初期状態にセットする
    gameState = 'start';
    // フレームを初期化する
-diff -u -r stage08/www/src/player.js stage09/www/src/player.js
+diff -uN -r stage08/www/src/player.js stage09/www/src/player.js
 --- stage08/www/src/player.js	2025-10-19 17:42:22.308732749 +0900
 +++ stage09/www/src/player.js	2025-10-19 17:42:22.312732618 +0900
 @@ -5,6 +5,60 @@

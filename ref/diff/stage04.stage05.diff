@@ -1,4 +1,4 @@
-diff -u -r stage04/www/src/config.js stage05/www/src/config.js
+diff -uN -r stage04/www/src/config.js stage05/www/src/config.js
 --- stage04/www/src/config.js	2025-10-19 17:42:22.293733236 +0900
 +++ stage05/www/src/config.js	2025-10-19 17:42:22.295733172 +0900
 @@ -23,4 +23,5 @@
@@ -7,7 +7,7 @@ diff -u -r stage04/www/src/config.js stage05/www/src/config.js
    static puyoColorMax = 5; // 何色のぷよを使うか
 +  static fallingSpeed = 6; // 自由落下のスピード
  }
-diff -u -r stage04/www/src/game.js stage05/www/src/game.js
+diff -uN -r stage04/www/src/game.js stage05/www/src/game.js
 --- stage04/www/src/game.js	2025-10-19 17:42:22.293733236 +0900
 +++ stage05/www/src/game.js	2025-10-19 17:42:22.295733172 +0900
 @@ -2,12 +2,49 @@
@@ -60,7 +60,7 @@ diff -u -r stage04/www/src/game.js stage05/www/src/game.js
 +  frame++;
 +  setTimeout(gameLoop, 1000 / 60); // 1/60秒後にもう一度呼び出す
  }
-diff -u -r stage04/www/src/stage.js stage05/www/src/stage.js
+diff -uN -r stage04/www/src/stage.js stage05/www/src/stage.js
 --- stage04/www/src/stage.js	2025-10-19 17:42:22.293733236 +0900
 +++ stage05/www/src/stage.js	2025-10-19 17:42:22.296733139 +0900
 @@ -2,6 +2,7 @@

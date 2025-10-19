@@ -1,4 +1,4 @@
-diff -u -r stage06/www/index.html stage07/www/index.html
+diff -uN -r stage06/www/index.html stage07/www/index.html
 --- stage06/www/index.html	2025-10-19 16:59:28.714649371 +0900
 +++ stage07/www/index.html	2025-10-19 16:59:28.926642667 +0900
 @@ -19,6 +19,7 @@
@@ -9,7 +9,7 @@ diff -u -r stage06/www/index.html stage07/www/index.html
      </div>
  </body>
  
-diff -u -r stage06/www/src/config.js stage07/www/src/config.js
+diff -uN -r stage06/www/src/config.js stage07/www/src/config.js
 --- stage06/www/src/config.js	2025-10-19 17:42:22.298733074 +0900
 +++ stage07/www/src/config.js	2025-10-19 17:42:22.302732944 +0900
 @@ -8,22 +8,23 @@
@@ -47,7 +47,7 @@ diff -u -r stage06/www/src/config.js stage07/www/src/config.js
    static eraseAnimationFrames = 30; // 何フレームでぷよを消すか
 +  static zenkeshiDuration = 150; // 全消し時のアニメーションミリセカンド
  }
-diff -u -r stage06/www/src/game.js stage07/www/src/game.js
+diff -uN -r stage06/www/src/game.js stage07/www/src/game.js
 --- stage06/www/src/game.js	2025-10-19 17:42:22.299733041 +0900
 +++ stage07/www/src/game.js	2025-10-19 17:42:22.303732911 +0900
 @@ -51,7 +51,12 @@
@@ -63,7 +63,7 @@ diff -u -r stage06/www/src/game.js stage07/www/src/game.js
          comboCount = 0;
          gameState = '';
        }
-diff -u -r stage06/www/src/stage.js stage07/www/src/stage.js
+diff -uN -r stage06/www/src/stage.js stage07/www/src/stage.js
 --- stage06/www/src/stage.js	2025-10-19 17:42:22.301732976 +0900
 +++ stage07/www/src/stage.js	2025-10-19 17:42:22.308732749 +0900
 @@ -5,6 +5,7 @@

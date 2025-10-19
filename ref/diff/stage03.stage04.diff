@@ -1,4 +1,4 @@
-diff -u -r stage03/www/index.html stage04/www/index.html
+diff -uN -r stage03/www/index.html stage04/www/index.html
 --- stage03/www/index.html	2025-10-19 16:26:36.000000000 +0900
 +++ stage04/www/index.html	2025-10-19 16:59:29.139635931 +0900
 @@ -7,11 +7,19 @@
@@ -21,7 +21,7 @@ diff -u -r stage03/www/index.html stage04/www/index.html
  </body>
  
  </html>
-diff -u -r stage03/www/src/config.js stage04/www/src/config.js
+diff -uN -r stage03/www/src/config.js stage04/www/src/config.js
 --- stage03/www/src/config.js	2025-10-19 17:42:22.289733366 +0900
 +++ stage04/www/src/config.js	2025-10-19 17:42:22.293733236 +0900
 @@ -5,4 +5,22 @@
@@ -47,7 +47,7 @@ diff -u -r stage03/www/src/config.js stage04/www/src/config.js
 +
 +  static puyoColorMax = 5; // 何色のぷよを使うか
  }
-diff -u -r stage03/www/src/game.js stage04/www/src/game.js
+diff -uN -r stage03/www/src/game.js stage04/www/src/game.js
 --- stage03/www/src/game.js	2025-10-19 17:42:22.289733366 +0900
 +++ stage04/www/src/game.js	2025-10-19 17:42:22.293733236 +0900
 @@ -5,6 +5,9 @@
@@ -60,8 +60,33 @@ diff -u -r stage03/www/src/game.js stage04/www/src/game.js
    // ステージを準備する
    Stage.initialize();
  }
-Only in stage04/www/src: image.js
-diff -u -r stage03/www/src/stage.js stage04/www/src/stage.js
+diff -uN -r stage03/www/src/image.js stage04/www/src/image.js
+--- stage03/www/src/image.js	1970-01-01 09:00:00.000000000 +0900
++++ stage04/www/src/image.js	2025-10-19 17:42:22.293733236 +0900
+@@ -0,0 +1,22 @@
++class GameImage {
++  static puyoImageList = null;
++
++  static initialize() {
++    // ぷよ画像を準備する
++    GameImage.puyoImageList = [];
++    for (let i = 0; i < Config.puyoColorMax; i++) {
++      const image = document.getElementById('puyo_' + (i + 1));
++      image.removeAttribute('id');
++      image.width = Config.puyoImageWidth;
++      image.height = Config.puyoImageHeight;
++      image.style.position = 'absolute';
++      GameImage.puyoImageList[i] = image;
++    }
++  }
++
++  // ぷよ画像を複製して返す
++  static getPuyoImage(color) {
++    const image = GameImage.puyoImageList[color - 1].cloneNode(true);
++    return image;
++  }
++}
+diff -uN -r stage03/www/src/stage.js stage04/www/src/stage.js
 --- stage03/www/src/stage.js	2025-10-19 17:42:22.290733334 +0900
 +++ stage04/www/src/stage.js	2025-10-19 17:42:22.293733236 +0900
 @@ -1,5 +1,7 @@

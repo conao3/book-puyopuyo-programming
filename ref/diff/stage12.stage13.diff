@@ -1,4 +1,4 @@
-diff -u -r stage12/www/index.html stage13/www/index.html
+diff -uN -r stage12/www/index.html stage13/www/index.html
 --- stage12/www/index.html	2025-10-19 16:59:29.197634097 +0900
 +++ stage13/www/index.html	2025-10-19 16:59:28.975641118 +0900
 @@ -9,6 +9,7 @@
@@ -35,7 +35,7 @@ diff -u -r stage12/www/index.html stage13/www/index.html
      </div>
  </body>
  
-diff -u -r stage12/www/src/config.js stage13/www/src/config.js
+diff -uN -r stage12/www/src/config.js stage13/www/src/config.js
 --- stage12/www/src/config.js	2025-10-19 17:42:22.326732163 +0900
 +++ stage13/www/src/config.js	2025-10-19 17:42:22.331732001 +0900
 @@ -6,6 +6,7 @@
@@ -60,7 +60,7 @@ diff -u -r stage12/www/src/config.js stage13/www/src/config.js
 +  static colorBonusTable = [0, 0, 3, 6, 12, 24]; // 色数ボーナステーブル
 +  static zenkeshiBonus = 3600; // 全消し時のボーナス
  }
-diff -u -r stage12/www/src/game.js stage13/www/src/game.js
+diff -uN -r stage12/www/src/game.js stage13/www/src/game.js
 --- stage12/www/src/game.js	2025-10-19 17:42:22.327732131 +0900
 +++ stage13/www/src/game.js	2025-10-19 17:42:22.332731968 +0900
 @@ -21,6 +21,9 @@
@@ -89,7 +89,7 @@ diff -u -r stage12/www/src/game.js stage13/www/src/game.js
          }
          comboCount = 0;
          gameState = 'createPlayerPuyo';
-diff -u -r stage12/www/src/image.js stage13/www/src/image.js
+diff -uN -r stage12/www/src/image.js stage13/www/src/image.js
 --- stage12/www/src/image.js	2025-10-19 17:42:22.327732131 +0900
 +++ stage13/www/src/image.js	2025-10-19 17:42:22.333731935 +0900
 @@ -1,5 +1,6 @@
@@ -136,7 +136,7 @@ diff -u -r stage12/www/src/image.js stage13/www/src/image.js
 +    return GameImage.digitImageList[0].width;
 +  }
  }
-diff -u -r stage12/www/src/player.js stage13/www/src/player.js
+diff -uN -r stage12/www/src/player.js stage13/www/src/player.js
 --- stage12/www/src/player.js	2025-10-19 17:42:22.329732065 +0900
 +++ stage13/www/src/player.js	2025-10-19 17:42:22.336731838 +0900
 @@ -144,6 +144,10 @@
@@ -150,4 +150,78 @@ diff -u -r stage12/www/src/player.js stage13/www/src/player.js
          // 下にブロックがないかを再度チェックする
          if (
            !Stage.getPuyoInfo(x, y + 1) &&
-Only in stage13/www/src: score.js
+diff -uN -r stage12/www/src/score.js stage13/www/src/score.js
+--- stage12/www/src/score.js	1970-01-01 09:00:00.000000000 +0900
++++ stage13/www/src/score.js	2025-10-19 17:42:22.334731903 +0900
+@@ -0,0 +1,71 @@
++class Score {
++  static scoreElement;
++  static digitCount = 0;
++  static score = 0;
++
++  static initialize() {
++    // HTML からスコアを表示する元となる要素を取得し、大きさを設定する
++    Score.scoreElement = document.getElementById('score');
++    Score.scoreElement.style.width =
++      Config.puyoImageWidth * Config.stageCols + 'px';
++    Score.scoreElement.style.height = Config.scoreHeight + 'px';
++    Score.scoreElement.style.backgroundColor = Config.scoreBackgroundColor;
++
++    // スコア欄に数字をいくつ並べられるか、計算で求める
++    Score.digitCount = Math.trunc(
++      (Config.stageCols * Config.puyoImageWidth) /
++        GameImage.getDigitImageWidth(),
++    );
++    Score.score = 0;
++
++    // とりあえず表示する
++    Score.updateScore();
++  }
++
++  // スコアの画面表示を更新する
++  static updateScore() {
++    let score = Score.score;
++    const scoreElement = Score.scoreElement;
++    // まず最初に、scoreElement の中身を空っぽにする
++    while (scoreElement.firstChild) {
++      scoreElement.firstChild.remove();
++    }
++    // スコアを下の桁から埋めていく
++    for (let i = 0; i < Score.digitCount; i++) {
++      // 10で割ったあまりを求めて、一番下の桁を取り出す
++      const digit = score % 10;
++      // 一番うしろに追加するのではなく、一番前に追加することで、一番下の桁から表示されるようにする
++      scoreElement.insertBefore(
++        GameImage.getDigitImage(digit),
++        scoreElement.firstChild,
++      );
++      // 10 で割って次の桁の準備をしておく
++      score = Math.trunc(score / 10);
++    }
++  }
++
++  // 連鎖時のスコアを加算する
++  static addComboScore(combo, piece, color) {
++    // テーブルの上限を超えた場合に、テーブルの一番最後の値を使うように調整する
++    combo = Math.min(combo, Config.comboBonusTable.length - 1);
++    piece = Math.min(piece, Config.pieceBonusTable.length - 1);
++    color = Math.min(color, Config.colorBonusTable.length - 1);
++
++    // 倍率を計算する。倍率の計算式は、連鎖ボーナス＋個数ボーナス＋色数ボーナス
++    let scale =
++      Config.comboBonusTable[combo] +
++      Config.pieceBonusTable[piece] +
++      Config.colorBonusTable[color];
++    if (scale === 0) {
++      scale = 1;
++    }
++    // 消した数に倍率をかけて、さらに 10 倍にしてスコアに加算する
++    Score.addScore(scale * piece * 10);
++  }
++
++  // スコアを加算する
++  static addScore(score) {
++    Score.score += score;
++    Score.updateScore();
++  }
++}

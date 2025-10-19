@@ -1,4 +1,4 @@
-diff -u -r stage14/www/index.html stage15/www/index.html
+diff -uN -r stage14/www/index.html stage15/www/index.html
 --- stage14/www/index.html	2025-10-19 16:59:28.825645861 +0900
 +++ stage15/www/index.html	2025-10-19 16:59:29.254632295 +0900
 @@ -3,6 +3,7 @@
@@ -18,7 +18,7 @@ diff -u -r stage14/www/index.html stage15/www/index.html
      <div id="next" style="position: relative; margin: 0 auto; overflow: hidden;">
      </div>
      <div id="stage" style="position:relative; margin: 0 auto; overflow: hidden; background: url(img/puyo_4bg.png)">
-diff -u -r stage14/www/src/game.js stage15/www/src/game.js
+diff -uN -r stage14/www/src/game.js stage15/www/src/game.js
 --- stage14/www/src/game.js	2025-10-19 17:42:22.339731740 +0900
 +++ stage15/www/src/game.js	2025-10-19 17:42:22.346731513 +0900
 @@ -3,6 +3,12 @@
@@ -34,7 +34,7 @@ diff -u -r stage14/www/src/game.js stage15/www/src/game.js
    // ゲームループを開始する
    gameLoop();
  });
-diff -u -r stage14/www/src/player.js stage15/www/src/player.js
+diff -uN -r stage14/www/src/player.js stage15/www/src/player.js
 --- stage14/www/src/player.js	2025-10-19 17:42:22.345731545 +0900
 +++ stage15/www/src/player.js	2025-10-19 17:42:22.352731318 +0900
 @@ -64,6 +64,57 @@
