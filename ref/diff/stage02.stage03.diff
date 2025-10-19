@@ -1,0 +1,22 @@
+diff -u -r stage02/www/index.html stage03/www/index.html
+--- stage02/www/index.html	2025-10-19 16:23:25.000000000 +0900
++++ stage03/www/index.html	2025-10-19 16:26:36.000000000 +0900
+@@ -4,10 +4,14 @@
+ <head>
+     <title>ぷよぷよプログラミングを体験してみよう ! </title>
+     <script src="https://cdn.jsdelivr.net/npm/web-console-log"></script>
++    <script src="src/config.js"></script>
++    <script src="src/stage.js"></script>
++    <script src="src/game.js"></script>
+ </head>
+ 
+ <body style="margin: 0;">
+-    ぷよぷよプログラミングの世界へようこそ！
++    <div id="stage" style="position:relative; margin: 0 auto; overflow: hidden; background: url(img/puyo_4bg.png)">
++    </div>
+ </body>
+ 
+ </html>
+Only in stage03/www/src: config.js
+Only in stage03/www/src: game.js
+Only in stage03/www/src: stage.js

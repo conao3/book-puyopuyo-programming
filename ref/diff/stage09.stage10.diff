@@ -1,0 +1,139 @@
+diff -u -r stage09/www/src/config.js stage10/www/src/config.js
+--- stage09/www/src/config.js	2025-10-19 16:31:05.000000000 +0900
++++ stage10/www/src/config.js	2025-10-19 16:31:46.000000000 +0900
+@@ -31,4 +31,5 @@
+     static playerFallingSpeed = 0.9; // プレイ中の自然落下のスピード
+     static playerLockDelayFrames = 20; // 何フレーム接地したらぷよを固定するか
+     static playerDownSpeed = 10; // プレイ中の下キー押下時の落下スピード
++    static playerMoveFrames = 10; // 左右移動に消費するフレーム数
+ }
+\ No newline at end of file
+diff -u -r stage09/www/src/game.js stage10/www/src/game.js
+--- stage09/www/src/game.js	2025-10-19 16:31:05.000000000 +0900
++++ stage10/www/src/game.js	2025-10-19 16:31:46.000000000 +0900
+@@ -83,8 +83,8 @@
+             break;
+         case 'playing':
+             // プレイヤーが操作する状態
+-            const nextAction = Player.update();
+-            gameState = nextAction; // 'playing' 'fix' のどれかが帰ってくる
++            const nextAction = Player.update(frame);
++            gameState = nextAction; // 'playing' 'fix' 'moving' のどれかが帰ってくる
+             break;
+         case 'fix':
+             // 現在の位置でぷよを固定する状態
+@@ -92,6 +92,13 @@
+             // 固定が完了したら、自由落下出来るぷよがあるかどうかを確認する
+             gameState = 'checkFallingPuyo';
+             break;
++        case 'moving':
++            // プレイヤーの操作ぷよが左右に移動するアニメーション状態
++            if (Player.movePlayerPuyo(frame)) {
++                // 移動が終わったので操作可能にする
++                gameState = 'playing';
++            }
++            break;
+     }
+     frame++;
+     setTimeout(gameLoop, 1000 / 60); // 1/60秒後にもう一度呼び出す
+diff -u -r stage09/www/src/player.js stage10/www/src/player.js
+--- stage09/www/src/player.js	2025-10-19 16:31:05.000000000 +0900
++++ stage10/www/src/player.js	2025-10-19 16:31:46.000000000 +0900
+@@ -6,6 +6,9 @@
+     static rotatingPuyoElement = null;
+     static groundedFrame = 0;
+     static keyStatus = null;
++    static actionStartFrame = 0;
++    static moveSource = 0;
++    static moveDestination = 0;
+ 
+     static initialize() {
+         // キーボードの入力を確認する
+@@ -160,7 +163,7 @@
+     }
+ 
+     // イベントループで現在の状況を更新する
+-    static update() {
++    static update(frame) {
+         // まずプレイヤーの操作ぷよを落下させる
+         if (Player.dropPlayerPuyo(Player.keyStatus.down)) {
+             // 接地が終わったら、ぷよを固定する
+@@ -168,9 +171,78 @@
+         }
+         // ぷよの位置を更新する
+         Player.setPlayerPuyoPosition();
++
++        // 左右キーの押下を確認する
++        if (Player.keyStatus.right || Player.keyStatus.left) {
++            // 左右の確認をする
++            const mx = (Player.keyStatus.right) ? 1 : -1;
++            const cx = Player.playerPuyoStatus.x;
++            const cy = Player.playerPuyoStatus.y;
++            const rx = cx + Player.playerPuyoStatus.dx;
++            const ry = cy + Player.playerPuyoStatus.dy;
++
++            // 動かしたい方向にブロックがないことを確認する
++            let canMove = true;
++
++            // まずはプレイヤーの操作ぷよのうち中心ぷよの左右を確認
++            if (Stage.getPuyoInfo(cx + mx, cy)) {
++                // ぷよが存在するので動かせない
++                canMove = false;
++            }
++            // 次に、回転するぷよの左右を確認
++            if (Stage.getPuyoInfo(rx + mx, ry)) {
++                // ぷよが存在するので動かせない
++                canMove = false;
++            }
++            // 接地していない場合は、さらに1個下のブロックの左右も確認する
++            if (Player.groundedFrame === 0) {
++                // 中心ぷよの左右を確認
++                if (Stage.getPuyoInfo(cx + mx, cy + 1)) {
++                    // ぷよが存在するので動かせない
++                    canMove = false;
++                }
++                // 回転するぷよの左右を確認
++                if (Stage.getPuyoInfo(rx + mx, ry + 1)) {
++                    // ぷよが存在するので動かせない
++                    canMove = false;
++                }
++            }
++
++            if (canMove) {
++                // 動かしたい方向に動かすことが出来るので、移動先情報をセットして移動状態にする
++                Player.actionStartFrame = frame;
++                Player.moveSource = cx * Config.puyoImageWidth;
++                Player.moveDestination = (cx + mx) * Config.puyoImageWidth;
++                Player.playerPuyoStatus.x += mx;
++                return 'moving';
++            }
++        }
++
+         return "playing";
+     }
+ 
++    // ぷよを左右に移動させる
++    static movePlayerPuyo(frame) {
++        // 左右の移動中も自然落下はさせる
++        Player.dropPlayerPuyo(false);
++
++        // 移動割合を計算する
++        let ratio = (frame - Player.actionStartFrame) / Config.playerMoveFrames;
++        if (ratio > 1) {
++            // 1 を超えた場合は 1 にする
++            ratio = 1;
++        }
++        Player.playerPuyoStatus.left = (Player.moveDestination - Player.moveSource) * ratio + Player.moveSource;
++        // ぷよの表示位置を変化させる
++        Player.setPlayerPuyoPosition();
++
++        if (ratio === 1) {
++            // アニメーションが終了していたら true
++            return true;
++        }
++        return false;
++    }
++
+     // 現在のプレイヤー操作ぷよを、ぷよぷよ盤の上に配置する
+     static fixPlayerPuyo() {
+         const { x, y, dx, dy } = Player.playerPuyoStatus;

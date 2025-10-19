@@ -1,0 +1,193 @@
+diff -u -r stage05/www/src/config.js stage06/www/src/config.js
+--- stage05/www/src/config.js	2025-10-19 16:28:12.000000000 +0900
++++ stage06/www/src/config.js	2025-10-19 16:28:51.000000000 +0900
+@@ -24,4 +24,6 @@
+ 
+     static puyoColorMax = 5; // 何色のぷよを使うか
+     static fallingSpeed = 6; // 自由落下のスピード
++    static erasePuyoCount = 4; // 何個以上揃ったら消えるか
++    static eraseAnimationFrames = 30; // 何フレームでぷよを消すか
+ }
+\ No newline at end of file
+diff -u -r stage05/www/src/game.js stage06/www/src/game.js
+--- stage05/www/src/game.js	2025-10-19 16:28:12.000000000 +0900
++++ stage06/www/src/game.js	2025-10-19 16:28:51.000000000 +0900
+@@ -9,6 +9,7 @@
+ 
+ let gameState; // ゲームの現在の状況
+ let frame; // ゲームの現在フレーム（1/60秒ごとに1追加される）
++let comboCount = 0; // 現在何連鎖しているか
+ 
+ function initialize() {
+     // 画像を準備する
+@@ -35,15 +36,33 @@
+             if (Stage.checkFallingPuyo()) {
+                 gameState = 'fallingPuyo';
+             } else {
+-                gameState = '';
++                gameState = 'checkPuyoErase';
+             }
+             break;
+         case 'fallingPuyo':
+             // ぷよが自由落下しているアニメーション状態
+             if (!Stage.fallPuyo()) {
++                gameState = 'checkPuyoErase';
++            }
++            break;
++        case 'checkPuyoErase':
++            // 消せるかどうか判定する状態
++            const eraseInfo = Stage.checkPuyoErase(frame);
++            if (eraseInfo) {
++                gameState = 'erasingPuyo';
++                comboCount++;
++            } else {
++                comboCount = 0;
+                 gameState = '';
+             }
+             break;
++        case 'erasingPuyo':
++            // ぷよが消えているアニメーション状態
++            if (!Stage.erasePuyo(frame)) {
++                // 消し終わったら、再度落ちるかどうか判定する
++                gameState = 'checkFallingPuyo';
++            }
++            break;
+     }
+     frame++;
+     setTimeout(gameLoop, 1000 / 60); // 1/60秒後にもう一度呼び出す
+diff -u -r stage05/www/src/stage.js stage06/www/src/stage.js
+--- stage05/www/src/stage.js	2025-10-19 16:28:12.000000000 +0900
++++ stage06/www/src/stage.js	2025-10-19 16:28:51.000000000 +0900
+@@ -3,6 +3,8 @@
+     static puyoBoard = null;
+     static puyoCount = 0;
+     static fallingPuyoInfoList = [];
++    static erasingStartFrame = 0;
++    static erasingInfoList = [];
+ 
+     static initialize() {
+         // HTML からステージの元となる要素を取得し、大きさを設定する
+@@ -144,4 +146,122 @@
+         }
+         return isFalling;
+     }
++
++    // 消せるかどうか判定する
++    static checkPuyoErase(startFrame) {
++        Stage.eraseStartFrame = startFrame;
++        Stage.erasingInfoList = [];
++
++        // 何色のぷよを消したかを記録する
++        const erasedPuyoColorBin = {};
++
++        // 隣接ぷよを確認する関数内関数を作成
++        const checkConnectedPuyo = (x, y, connectedInfoList = []) => {
++            // ぷよがあるか確認する
++            const originalPuyoInfo = Stage.getPuyoInfo(x, y);
++            if (!originalPuyoInfo) {
++                // ないなら何もしない
++                return connectedInfoList;
++            }
++            // あるなら一旦、ぷよぷよ盤の上から一時的に消す
++            connectedInfoList.push({
++                x: x,
++                y: y,
++                puyoInfo: originalPuyoInfo
++            });
++            Stage.removePuyoInfo(x, y);
++
++            // 四方向の周囲ぷよを確認する
++            const directionList = [[0, 1], [1, 0], [0, -1], [-1, 0]];
++            for (const direction of directionList) {
++                const dx = x + direction[0];
++                const dy = y + direction[1];
++                const puyoInfo = Stage.getPuyoInfo(dx, dy);
++                if (!puyoInfo || puyoInfo.puyoColor !== originalPuyoInfo.puyoColor) {
++                    // ぷよの色が違う
++                    continue;
++                }
++                // 自分と同じ色のぷよだったら、そのぷよのまわりのぷよも消せるか確認する
++                checkConnectedPuyo(dx, dy, connectedInfoList);
++            }
++            return connectedInfoList;
++        };
++
++        const remainingInfoList = [];
++        // ひとつひとつぷよを確認し、そのぷよが消せるかどうか判断していく
++        for (let y = 0; y < Config.stageRows; y++) {
++            for (let x = 0; x < Config.stageCols; x++) {
++                const puyoInfo = Stage.getPuyoInfo(x, y);
++                const connectedInfoList = checkConnectedPuyo(x, y);
++                if (connectedInfoList.length < Config.erasePuyoCount) {
++                    // 連続していないか、連続していても数が足りなかったので消さない
++                    if (connectedInfoList.length) {
++                        // 退避していたぷよを消さないで戻すリストに追加する
++                        remainingInfoList.push(...connectedInfoList);
++                    }
++                } else {
++                    if (connectedInfoList.length) {
++                        // 消せるぷよだったので、消すリストに追加する
++                        Stage.erasingInfoList.push(...connectedInfoList);
++                        erasedPuyoColorBin[puyoInfo.puyoColor] = true;
++                    }
++                }
++            }
++        }
++
++        // 全体のぷよぷよ個数から、今回消した個数を引いておく
++        Stage.puyoCount -= Stage.erasingInfoList.length;
++
++        // 消さないで戻すリストに入っていたぷよをメモリに復帰させる
++        for (const info of remainingInfoList) {
++            Stage.setPuyoInfo(info.x, info.y, info.puyoInfo);
++        }
++
++        if (Stage.erasingInfoList.length) {
++            // もし消せるならば、消えるぷよの個数と色の情報をまとめて返す
++            return {
++                piece: Stage.erasingInfoList.length,
++                color: Object.keys(erasedPuyoColorBin).length
++            };
++        }
++        return null;
++    }
++
++    // 消すアニメーションをする
++    static erasePuyo(frame) {
++        const elapsedFrame = frame - Stage.eraseStartFrame;
++        const ratio = elapsedFrame / Config.eraseAnimationFrames;
++        if (ratio >= 1) {
++            // アニメーションを終了する
++            for (const info of Stage.erasingInfoList) {
++                var element = info.puyoInfo.element;
++                Stage.stageElement.removeChild(element);
++            }
++            return false;
++        } else if (ratio >= 0.75) {
++            for (const info of Stage.erasingInfoList) {
++                var element = info.puyoInfo.element;
++                element.style.display = 'block';
++            }
++            return true;
++        } else if (ratio >= 0.50) {
++            for (const info of Stage.erasingInfoList) {
++                var element = info.puyoInfo.element;
++                element.style.display = 'none';
++            }
++            return true;
++        } else if (ratio >= 0.25) {
++            for (const info of Stage.erasingInfoList) {
++                var element = info.puyoInfo.element;
++                element.style.display = 'block';
++            }
++            return true;
++        } else {
++            for (const info of Stage.erasingInfoList) {
++                var element = info.puyoInfo.element;
++                element.style.display = 'none';
++            }
++            return true;
++        }
++    }
+ }
+\ No newline at end of file

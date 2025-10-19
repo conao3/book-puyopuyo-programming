@@ -1,0 +1,12 @@
+diff -u -r stage01/www/index.html stage02/www/index.html
+--- stage01/www/index.html	2025-10-19 16:20:45.000000000 +0900
++++ stage02/www/index.html	2025-10-19 16:23:25.000000000 +0900
+@@ -7,7 +7,7 @@
+ </head>
+ 
+ <body style="margin: 0;">
+-    ※ここになにか書いてみましょう！
++    ぷよぷよプログラミングの世界へようこそ！
+ </body>
+ 
+ </html>

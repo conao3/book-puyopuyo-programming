@@ -1,0 +1,125 @@
+diff -u -r stage03/www/index.html stage04/www/index.html
+--- stage03/www/index.html	2025-10-19 16:26:36.000000000 +0900
++++ stage04/www/index.html	2025-10-19 16:27:33.000000000 +0900
+@@ -7,11 +7,19 @@
+     <script src="src/config.js"></script>
+     <script src="src/stage.js"></script>
+     <script src="src/game.js"></script>
++    <script src="src/image.js"></script>
+ </head>
+ 
+ <body style="margin: 0;">
+     <div id="stage" style="position:relative; margin: 0 auto; overflow: hidden; background: url(img/puyo_4bg.png)">
+     </div>
++    <div style="display:none">
++        <img src="img/puyo_1.png" id="puyo_1">
++        <img src="img/puyo_2.png" id="puyo_2">
++        <img src="img/puyo_3.png" id="puyo_3">
++        <img src="img/puyo_4.png" id="puyo_4">
++        <img src="img/puyo_5.png" id="puyo_5">
++    </div>
+ </body>
+ 
+-</html>
++</html>
+\ No newline at end of file
+diff -u -r stage03/www/src/config.js stage04/www/src/config.js
+--- stage03/www/src/config.js	2025-10-19 16:26:36.000000000 +0900
++++ stage04/www/src/config.js	2025-10-19 16:27:33.000000000 +0900
+@@ -5,4 +5,22 @@
+     static stageCols = 6; // ステージの横の個数
+     static stageRows = 12; // ステージの縦の個数
+     static stageBackgroundColor = '#11213b'; // ステージの背景色
++
++    // 初期状態のステージ
++    static initialBoard = [
++        [0, 1, 2, 3, 4, 5],
++        [1, 2, 3, 4, 5, 0],
++        [2, 3, 4, 5, 0, 1],
++        [0, 0, 0, 0, 0, 0],
++        [0, 1, 1, 1, 2, 0],
++        [0, 4, 5, 5, 2, 0],
++        [0, 4, 5, 5, 2, 0],
++        [0, 4, 3, 3, 3, 0],
++        [0, 0, 0, 0, 0, 0],
++        [1, 1, 0, 0, 2, 2],
++        [0, 0, 2, 2, 0, 0],
++        [4, 4, 0, 0, 5, 5],
++    ];
++
++    static puyoColorMax = 5; // 何色のぷよを使うか
+ }
+\ No newline at end of file
+diff -u -r stage03/www/src/game.js stage04/www/src/game.js
+--- stage03/www/src/game.js	2025-10-19 16:26:36.000000000 +0900
++++ stage04/www/src/game.js	2025-10-19 16:27:33.000000000 +0900
+@@ -5,6 +5,9 @@
+ });
+ 
+ function initialize() {
++    // 画像を準備する
++    GameImage.initialize();
++
+     // ステージを準備する
+     Stage.initialize();
+ }
+\ No newline at end of file
+Only in stage04/www/src: image.js
+diff -u -r stage03/www/src/stage.js stage04/www/src/stage.js
+--- stage03/www/src/stage.js	2025-10-19 16:26:36.000000000 +0900
++++ stage04/www/src/stage.js	2025-10-19 16:27:33.000000000 +0900
+@@ -1,5 +1,7 @@
+ class Stage {
+     static stageElement = null;
++    static puyoBoard = null;
++    static puyoCount = 0;
+ 
+     static initialize() {
+         // HTML からステージの元となる要素を取得し、大きさを設定する
+@@ -7,5 +9,45 @@
+         Stage.stageElement.style.width = Config.puyoImageWidth * Config.stageCols + 'px';
+         Stage.stageElement.style.height = Config.puyoImageHeight * Config.stageRows + 'px';
+         Stage.stageElement.style.backgroundColor = Config.stageBackgroundColor;
++
++        // ぷよぷよ盤を初期化する
++        Stage.puyoCount = 0;
++        Stage.puyoBoard = [];
++        for (let y = 0; y < Config.stageRows; y++) {
++            Stage.puyoBoard[y] = [];
++            for (let x = 0; x < Config.stageCols; x++) {
++                Stage.puyoBoard[y][x] = null;
++            }
++        }
++
++        // もし初期状態ステージの情報があれば、その情報を元にぷよを配置する
++        for (let y = 0; y < Config.stageRows; y++) {
++            for (let x = 0; x < Config.stageCols; x++) {
++                let puyoColor = 0;
++                if (Config.initialBoard && Config.initialBoard[y][x]) {
++                    puyoColor = Config.initialBoard[y][x];
++                }
++                if (puyoColor >= 1 && puyoColor <= Config.puyoColorMax) {
++                    Stage.createPuyo(x, y, puyoColor);
++                }
++            }
++        }
++    }
++
++    // ぷよを新しく作って、画面上とぷよぷよ盤の両方にセットする
++    static createPuyo(x, y, puyoColor) {
++        // 画像を作成し、画面上の適切な位置に配置する
++        const puyoImage = GameImage.getPuyoImage(puyoColor);
++        puyoImage.style.left = x * Config.puyoImageWidth + "px";
++        puyoImage.style.top = y * Config.puyoImageHeight + "px";
++        Stage.stageElement.appendChild(puyoImage);
++
++        // ぷよぷよ盤に情報を保存する
++        Stage.puyoBoard[y][x] = {
++            puyoColor: puyoColor,
++            element: puyoImage
++        }
++        // ぷよの総数を追加する
++        Stage.puyoCount++;
+     }
+ }
+\ No newline at end of file

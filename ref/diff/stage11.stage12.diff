@@ -1,0 +1,117 @@
+diff -u -r stage11/www/index.html stage12/www/index.html
+--- stage11/www/index.html	2025-10-19 16:32:16.000000000 +0900
++++ stage12/www/index.html	2025-10-19 16:32:55.000000000 +0900
+@@ -12,6 +12,8 @@
+ </head>
+ 
+ <body style="margin: 0;">
++    <div id="next" style="position: relative; margin: 0 auto; overflow: hidden;">
++    </div>
+     <div id="stage" style="position:relative; margin: 0 auto; overflow: hidden; background: url(img/puyo_4bg.png)">
+     </div>
+     <div style="display:none">
+diff -u -r stage11/www/src/config.js stage12/www/src/config.js
+--- stage11/www/src/config.js	2025-10-19 16:32:16.000000000 +0900
++++ stage12/www/src/config.js	2025-10-19 16:32:55.000000000 +0900
+@@ -5,6 +5,7 @@
+     static stageCols = 6; // ステージの横の個数
+     static stageRows = 12; // ステージの縦の個数
+     static stageBackgroundColor = '#11213b'; // ステージの背景色
++    static nextBackgroundColor = '#e2a9c8'; // ネクスト表示の背景色
+ 
+     // 初期状態のステージ
+     static initialBoard = [
+diff -u -r stage11/www/src/player.js stage12/www/src/player.js
+--- stage11/www/src/player.js	2025-10-19 16:32:16.000000000 +0900
++++ stage12/www/src/player.js	2025-10-19 16:32:55.000000000 +0900
+@@ -74,9 +74,10 @@
+             return false;
+         }
+ 
+-        // 新しいぷよの色を決める
+-        Player.centerPuyoColor = Math.trunc(Math.random() * Config.puyoColorMax) + 1;
+-        Player.rotatingPuyoColor = Math.trunc(Math.random() * Config.puyoColorMax) + 1;
++        // 新しいぷよの色をネクストぷよから取得する
++        const nextPuyoColors = Stage.getNextPuyoColors();
++        Player.centerPuyoColor = nextPuyoColors[0];
++        Player.rotatingPuyoColor = nextPuyoColors[1];
+ 
+         // 新しいぷよ画像を作成する
+         Player.centerPuyoElement = GameImage.getPuyoImage(Player.centerPuyoColor);
+diff -u -r stage11/www/src/stage.js stage12/www/src/stage.js
+--- stage11/www/src/stage.js	2025-10-19 16:32:16.000000000 +0900
++++ stage12/www/src/stage.js	2025-10-19 16:32:55.000000000 +0900
+@@ -6,6 +6,9 @@
+     static erasingStartFrame = 0;
+     static erasingInfoList = [];
+     static zenkeshiImage = null;
++    static nextElement = null;
++    static nextPuyoColors = [];
++    static nextPuyoElements = [];
+ 
+     static initialize() {
+         // HTML からステージの元となる要素を取得し、大きさを設定する
+@@ -14,6 +17,25 @@
+         Stage.stageElement.style.height = Config.puyoImageHeight * Config.stageRows + 'px';
+         Stage.stageElement.style.backgroundColor = Config.stageBackgroundColor;
+ 
++        // ネクストぷよを表示する要素を取得し、大きさを設定する
++        const nextContainerElement = document.getElementById("next");
++        nextContainerElement.style.width = Config.puyoImageWidth * Config.stageCols + 'px';
++        nextContainerElement.style.height = Config.puyoImageHeight * 2.2 + 'px';
++        nextContainerElement.style.backgroundColor = Config.nextBackgroundColor;
++
++        // 実際にネクストぷよを格納する要素を作成し、画面に追加する
++        const borderWidth = 2;
++        Stage.nextElement = document.createElement("div");
++        Stage.nextElement.style.position = "absolute";
++        Stage.nextElement.style.left = (Config.puyoImageWidth * (Config.stageCols - 1)) / 2 - borderWidth + 'px';
++        Stage.nextElement.style.top = (Config.puyoImageHeight * 0.1) - borderWidth + 'px';
++        Stage.nextElement.style.width = Config.puyoImageWidth * 1 + "px";
++        Stage.nextElement.style.height = Config.puyoImageWidth * 2 + "px";
++        Stage.nextElement.style.border = borderWidth + "px solid #ff8";
++        Stage.nextElement.style.borderRadius = Config.puyoImageWidth * 0.2 + "px";
++        Stage.nextElement.style.backgroundColor = "rgba(0, 0, 0, 0.5)";
++        nextContainerElement.appendChild(Stage.nextElement);
++
+         // 全消しの画像を用意する
+         Stage.zenkeshiImage = document.getElementById("zenkeshi");
+         Stage.zenkeshiImage.width = Config.puyoImageWidth * Config.stageCols;
+@@ -43,6 +65,37 @@
+                 }
+             }
+         }
++
++        // 最初のネクストぷよを作成する
++        Stage.nextPuyoColors = [];
++        Stage.nextPuyoElements = [];
++        Stage.getNextPuyoColors();
++    }
++
++    // 現在のネクストぷよを返し、新しいネクストぷよを作成ならびに画面上に表示する
++    static getNextPuyoColors() {
++        // 現在のネクストぷよの色を返り値用に退避しておく
++        const ret = Stage.nextPuyoColors;
++        // 新しいネクストぷよの色を決める
++        const nextCenterPuyoColor = Math.trunc(Math.random() * Config.puyoColorMax) + 1;
++        const nextRotatingPuyoColor = Math.trunc(Math.random() * Config.puyoColorMax) + 1;
++        Stage.nextPuyoColors = [nextCenterPuyoColor, nextRotatingPuyoColor];
++
++        // もしネクストぷよの準備がなかったならば、初回なので画面描画をする必要はない
++        if (ret.length) {
++            // ネクストぷよが存在したので、新しいネクストぷよを画面に描画する必要がある
++            // 現在のネクストぷよを画面上から削除する
++            for (const element of Stage.nextPuyoElements) {
++                element.remove();
++            }
++            // 新しくネクストぷよを画面上に配置する
++            const nextCenterPuyoElement = GameImage.getPuyoImage(nextCenterPuyoColor);
++            const nextRotatingPuyoElement = GameImage.getPuyoImage(nextRotatingPuyoColor);
++            nextCenterPuyoElement.style.top = Config.puyoImageHeight + "px";
++            Stage.nextElement.append(nextCenterPuyoElement, nextRotatingPuyoElement);
++            Stage.nextPuyoElements = [nextCenterPuyoElement, nextRotatingPuyoElement];
++        }
++        return ret;
+     }
+ 
+     // ぷよを新しく作って、画面上とぷよぷよ盤の両方にセットする
