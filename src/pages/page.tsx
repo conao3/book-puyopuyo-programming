@@ -1,9 +1,8 @@
 import { Link } from 'react-router-dom';
 
 export default function Home() {
-  const pages = Object.keys(import.meta.glob('./*.tsx'))
-    .filter((path) => !path.includes('Home.tsx'))
-    .map((path) => path.replace('./', '').replace('.tsx', ''))
+  const pages = Object.keys(import.meta.glob('./*/page.tsx'))
+    .map((path) => path.replace('./', '').replace('/page.tsx', ''))
     .sort();
 
   return (
@@ -13,7 +12,7 @@ export default function Home() {
       <ul>
         {pages.map((page) => (
           <li key={page}>
-            <Link to={`/${page.toLowerCase()}`}>{page}</Link>
+            <Link to={`/${page}`}>{page}</Link>
           </li>
         ))}
       </ul>

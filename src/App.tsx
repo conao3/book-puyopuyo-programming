@@ -1,16 +1,25 @@
 import { Routes, Route } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
 
-const pages = import.meta.glob('./pages/*.tsx');
+const rootPage = import.meta.glob('./pages/page.tsx');
+const stagePages = import.meta.glob('./pages/*/page.tsx');
 
-const pageRoutes = Object.entries(pages).map(([path, component]) => {
-  const pageName = path.replace('./pages/', '').replace('.tsx', '');
-  const routePath = pageName === 'Home' ? '/' : `/${pageName.toLowerCase()}`;
-  const Component = lazy(
-    component as () => Promise<{ default: React.ComponentType }>,
-  );
-  return { path: routePath, Component };
-});
+const pageRoutes = [
+  ...Object.entries(rootPage).map(([path, component]) => {
+    const Component = lazy(
+      component as () => Promise<{ default: React.ComponentType }>,
+    );
+    return { path: '/', Component };
+  }),
+  ...Object.entries(stagePages).map(([path, component]) => {
+    const stageName = path.replace('./pages/', '').replace('/page.tsx', '');
+    const routePath = `/${stageName}`;
+    const Component = lazy(
+      component as () => Promise<{ default: React.ComponentType }>,
+    );
+    return { path: routePath, Component };
+  }),
+];
 
 export default function App() {
   return (
