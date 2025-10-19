@@ -18,12 +18,13 @@
           packages = with pkgs; [
             nodejs_22
             pnpm_10
+            biome
           ];
         };
 
         treefmt = {
           projectRootFile = "flake.nix";
-          programs.prettier.enable = true;
+          programs.biome.enable = true;
         };
       };
     };

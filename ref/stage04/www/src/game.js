@@ -1,13 +1,13 @@
 // 起動されたときに呼ばれる関数を登録する
-window.addEventListener("load", () => {
-    // まずステージを整える
-    initialize();
+window.addEventListener('load', () => {
+  // まずステージを整える
+  initialize();
 });
 
 function initialize() {
-    // 画像を準備する
-    GameImage.initialize();
+  // 画像を準備する
+  GameImage.initialize();
 
-    // ステージを準備する
-    Stage.initialize();
+  // ステージを準備する
+  Stage.initialize();
 }

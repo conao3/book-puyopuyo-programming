@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 
 export default function Stage01() {
   return (
@@ -7,5 +7,5 @@ export default function Stage01() {
       <p>This is Stage 01</p>
       <Link to="/">Back to Home</Link>
     </div>
-  )
+  );
 }

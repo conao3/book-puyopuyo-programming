@@ -1,10 +1,10 @@
-import { Link } from 'react-router-dom'
+import { Link } from 'react-router-dom';
 
 export default function Home() {
   const pages = Object.keys(import.meta.glob('./*.tsx'))
     .filter((path) => !path.includes('Home.tsx'))
     .map((path) => path.replace('./', '').replace('.tsx', ''))
-    .sort()
+    .sort();
 
   return (
     <div>
@@ -18,5 +18,5 @@ export default function Home() {
         ))}
       </ul>
     </div>
-  )
+  );
 }
