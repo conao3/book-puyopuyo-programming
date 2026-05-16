@@ -1,11 +1,11 @@
-import { Routes, Route } from 'react-router-dom';
 import { lazy, Suspense } from 'react';
+import { Route, Routes } from 'react-router-dom';
 
 const rootPage = import.meta.glob('./pages/page.tsx');
 const stagePages = import.meta.glob('./pages/*/page.tsx');
 
 const pageRoutes = [
-  ...Object.entries(rootPage).map(([path, component]) => {
+  ...Object.values(rootPage).map((component) => {
     const Component = lazy(
       component as () => Promise<{ default: React.ComponentType }>,
     );
