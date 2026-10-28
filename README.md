@@ -16,8 +16,8 @@ This project recreates the game development tutorials from the "Puyo Puyo Progra
 
 ## Prerequisites
 
-- Node.js 22 or higher
-- pnpm 10 or higher
+- Node.js 26 or higher
+- pnpm 12.9.0 or higher
 
 ## Getting Started
 

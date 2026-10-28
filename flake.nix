@@ -16,8 +16,8 @@
       perSystem = { pkgs, ... }: {
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
-            nodejs_22
-            pnpm_10
+            nodejs_latest
+            pnpm
             biome
           ];
         };
