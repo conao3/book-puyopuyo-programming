@@ -20,6 +20,7 @@
             pnpm
             biome
           ];
+          BIOME_BINARY = "${pkgs.biome}/bin/biome";
         };
 
         treefmt = {
