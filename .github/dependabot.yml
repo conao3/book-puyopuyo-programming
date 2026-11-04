@@ -4,6 +4,8 @@ updates:
     directory: /
     schedule:
       interval: weekly
+    ignore:
+      - dependency-name: "@biomejs/biome"
     groups:
       npm-minor-patch:
         update-types: [minor, patch]
