@@ -19,6 +19,7 @@ const Config = {
     [4, 4, 0, 0, 5, 5],
   ],
   puyoColorMax: 5,
+  fallingSpeed: 1,
 } as const;
 
 export default Config;
