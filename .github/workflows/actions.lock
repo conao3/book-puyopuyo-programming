@@ -6,6 +6,7 @@ workflows:
     '.github/workflows/ci.yml':
         - 'actions/checkout@v7.0.1'
         - 'actions/setup-node@v7.1.0'
+        - 'cachix/install-nix-action@v32.1.0'
         - 'pnpm/action-setup@v6.1.1'
 dependencies:
     'actions/checkout@v7.0.1':
@@ -18,6 +19,11 @@ dependencies:
         commit: 'sha1-949feb2413d6458794dcd2491c4babbbce0c15c1'
         owner_id: 44036562
         repo_id: 189476904
+    'cachix/install-nix-action@v32.1.0':
+        ref: 'v32.1.0'
+        commit: 'sha1-382a9ed9481c7c1f94f68b72ef105b3417c73877'
+        owner_id: 36824654
+        repo_id: 212301524
     'pnpm/action-setup@v6.1.1':
         ref: 'v6.1.1'
         commit: 'sha1-73e46992e05b19abd31f2f3c20e0e7370d762115'

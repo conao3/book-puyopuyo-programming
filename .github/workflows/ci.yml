@@ -28,3 +28,12 @@ jobs:
       - run: pnpm exec biome ci src vite.config.ts
 
       - run: pnpm exec vite build
+
+  fmt:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+
+      - uses: cachix/install-nix-action@v32.1.0
+
+      - run: nix fmt -- --no-cache --fail-on-change
