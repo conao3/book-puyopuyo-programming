@@ -33,6 +33,16 @@ Start the development server:
 pnpm dev
 ```
 
+Open the URL that Vite prints. The screenshots below show the built-in sample board of this project ([`src/pages/stage05/config.ts`](src/pages/stage05/config.ts)). The images in them are SEGA game assets, under the terms in [`LICENSE_SEGA.txt`](LICENSE_SEGA.txt).
+
+`/stage04` draws the board:
+
+<img src="images/stage04.png" alt="stage04: a 6 by 12 board with puyos of five colors, some of them floating" width="240">
+
+`/stage05` lets the floating puyos fall, and shows the frame, FPS and game state next to the board:
+
+<img src="images/stage05.png" alt="stage05: the puyos stacked at the bottom of the board, next to a panel with the game state idle" width="448">
+
 ## Project Structure
 
 ```
@@ -50,4 +60,4 @@ Licensed under the "Puyo Puyo Programming" Terms of Use (`LICENSE_SEGA`). This d
 
 **Source Code (`src/` and other files)**
 
-Dual-licensed under Apache-2.0 (`LICENSE_APACHE_2_0`) and the "Puyo Puyo Programming" Terms of Use (`LICENSE_SEGA`). Original code written for this reimplementation is available under Apache-2.0, while game assets in the `www` directory remain under the SEGA terms.
+Dual-licensed under Apache-2.0 (`LICENSE_APACHE_2_0`) and the "Puyo Puyo Programming" Terms of Use (`LICENSE_SEGA`). Original code written for this reimplementation is available under Apache-2.0, while game assets in the `public/img_sega` and `www` directories, and in the screenshots in `images/`, remain under the SEGA terms.
