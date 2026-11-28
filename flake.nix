@@ -13,7 +13,7 @@
         inputs.treefmt-nix.flakeModule
       ];
 
-      perSystem = { pkgs, ... }: {
+      perSystem = { pkgs, lib, ... }: {
         devShells.default = pkgs.mkShell {
           packages = with pkgs; [
             nodejs_latest
@@ -26,6 +26,14 @@
         treefmt = {
           projectRootFile = "flake.nix";
           programs.biome.enable = true;
+          settings.formatter.biome.options = lib.mkForce [
+            "check"
+            "--write"
+            "--no-errors-on-unmatched"
+            "--config-path"
+            "biome.json"
+          ];
+          settings.global.excludes = [ "ref/**" ];
         };
       };
     };
